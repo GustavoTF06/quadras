@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.quadras.quadras.dto.LoginResponseDTO;
 import com.quadras.quadras.dto.UsuarioLoginDTO;
-import com.quadras.quadras.config.security.JwtService;
+import com.quadras.quadras.security.JwtService;
 
 @Service
 public class UsuarioService {

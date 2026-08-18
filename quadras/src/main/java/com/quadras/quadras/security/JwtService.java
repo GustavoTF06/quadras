@@ -1,4 +1,4 @@
-package com.quadras.quadras.config.security;
+package com.quadras.quadras.security;
 
 import com.quadras.quadras.entity.Usuario;
 import io.jsonwebtoken.Jwts;
@@ -37,5 +37,15 @@ public class JwtService {
                 .expiration(expiracao)
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public String getEmailFromToken(String token) {
+
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
     }
 }
