@@ -31,4 +31,18 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(resposta);
     }
+
+    @ExceptionHandler(CredenciaisInvalidasException.class)
+    public ResponseEntity<ErroResponseDTO> tratarCredenciaisInvalidas(
+            CredenciaisInvalidasException exception) {
+
+        ErroResponseDTO resposta = new ErroResponseDTO(
+                HttpStatus.UNAUTHORIZED.value(),
+                List.of(exception.getMessage())
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(resposta);
+    }
 }
