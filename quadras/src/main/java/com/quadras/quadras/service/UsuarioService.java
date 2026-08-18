@@ -37,6 +37,7 @@ public class UsuarioService {
         usuario.setCpf(dados.getCpf());
         usuario.setTelefone(dados.getTelefone());
         usuario.setDataNascimento(dados.getDataNascimento());
+        usuario.setRole("CLIENTE");
 
         String senhaHash = passwordEncoder.encode(dados.getSenha());
         usuario.setSenhaHash(senhaHash);

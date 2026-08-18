@@ -5,6 +5,7 @@ import com.quadras.quadras.dto.UsuarioResponseDTO;
 import com.quadras.quadras.entity.Usuario;
 import com.quadras.quadras.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -25,6 +26,11 @@ public class UsuarioController {
         UsuarioResponseDTO usuarioCriado = usuarioService.criar(dados);
 
         return ResponseEntity.ok(usuarioCriado);
+    }
+    @PreAuthorize("hasRole('CLIENTE')")
+    @GetMapping("/area-cliente")
+    public ResponseEntity<String> areaCliente() {
+        return ResponseEntity.ok("Área exclusiva do cliente");
     }
 
 
