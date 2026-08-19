@@ -5,21 +5,26 @@ import com.quadras.quadras.dto.EstabelecimentoResponseDTO;
 import com.quadras.quadras.entity.Estabelecimento;
 import com.quadras.quadras.entity.Usuario;
 import com.quadras.quadras.repository.EstabelecimentoRepository;
+import com.quadras.quadras.repository.SolicitacaoEstabelecimentoRepository;
 import com.quadras.quadras.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import com.quadras.quadras.entity.SolicitacaoEstabelecimento;
 
 @Service
 public class EstabelecimentoService {
 
     private final EstabelecimentoRepository estabelecimentoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final SolicitacaoEstabelecimentoRepository solicitacaoRepository;
 
     public EstabelecimentoService(
             EstabelecimentoRepository estabelecimentoRepository,
-            UsuarioRepository usuarioRepository) {
+            UsuarioRepository usuarioRepository,
+            SolicitacaoEstabelecimentoRepository solicitacaoRepository) {
 
         this.estabelecimentoRepository = estabelecimentoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.solicitacaoRepository = solicitacaoRepository;
     }
 
     public EstabelecimentoResponseDTO criar(
@@ -58,6 +63,18 @@ public class EstabelecimentoService {
 
         Estabelecimento salvo =
                 estabelecimentoRepository.save(estabelecimento);
+
+        SolicitacaoEstabelecimento solicitacao =
+                new SolicitacaoEstabelecimento();
+
+        solicitacao.setEstabelecimento(salvo);
+        solicitacao.setUsuarioSolicitante(usuario);
+        solicitacao.setStatus("PENDENTE");
+        solicitacao.setDataSolicitacao(
+                java.time.LocalDateTime.now()
+        );
+
+        solicitacaoRepository.save(solicitacao);
 
         return converterParaResponse(salvo);
     }
