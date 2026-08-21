@@ -70,11 +70,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(authentication);
+                System.out.println(
+                        "USUARIO AUTENTICADO: "
+                                + usuario.getEmail()
+                                + " | ROLE: "
+                                + usuario.getRole()
+                );
             }
 
-        } catch (Exception ignored) {
-            // Token inválido ou expirado.
-            // A requisição continuará sem autenticação.
+        } catch (Exception e) {
+            System.out.println("ERRO JWT: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);

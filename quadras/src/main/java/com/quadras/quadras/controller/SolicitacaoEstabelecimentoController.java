@@ -63,4 +63,18 @@ public class SolicitacaoEstabelecimentoController {
                 solicitacaoService.listarPendentes()
         );
     }
+
+    @GetMapping("/minhas")
+    @PreAuthorize("hasRole('PROPRIETARIO')")
+    public ResponseEntity<List<SolicitacaoEstabelecimentoResponseDTO>> listarMinhasSolicitacoes(
+            Authentication authentication) {
+
+        Long usuarioId =
+                ((com.quadras.quadras.entity.Usuario)
+                        authentication.getPrincipal()).getUsuarioId();
+
+        return ResponseEntity.ok(
+                solicitacaoService.listarMinhasSolicitacoes(usuarioId)
+        );
+    }
 }

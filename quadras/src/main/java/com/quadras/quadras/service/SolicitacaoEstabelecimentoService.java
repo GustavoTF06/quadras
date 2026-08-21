@@ -149,4 +149,14 @@ public class SolicitacaoEstabelecimentoService {
                 solicitacao.getDataAnalise()
         );
     }
+
+    public List<SolicitacaoEstabelecimentoResponseDTO> listarMinhasSolicitacoes(
+            Long usuarioId) {
+
+        return solicitacaoRepository
+                .findByUsuarioSolicitanteUsuarioId(usuarioId)
+                .stream()
+                .map(this::converterParaResponse)
+                .toList();
+    }
 }
