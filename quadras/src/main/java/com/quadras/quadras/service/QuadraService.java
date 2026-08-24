@@ -12,6 +12,8 @@ import com.quadras.quadras.repository.QuadraRepository;
 import com.quadras.quadras.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class QuadraService {
 
@@ -97,5 +99,86 @@ public class QuadraService {
                 quadra.getCapacidade(),
                 quadra.getStatus()
         );
+    }
+
+    public List<QuadraResponseDTO> listarPorEstabelecimento(Long estabelecimentoId) {
+
+        return quadraRepository
+                .findByEstabelecimentoId(estabelecimentoId)
+                .stream()
+                .map(this::converterParaResponse)
+                .toList();
+    }
+
+    public QuadraResponseDTO buscarPorId(Long id) {
+
+        Quadra quadra = quadraRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Quadra não encontrada"));
+
+        return converterParaResponse(quadra);
+    }
+
+    public QuadraResponseDTO atualizar(
+            Long id,
+            QuadraCadastroDTO dados,
+            Long usuarioId) {
+
+        Quadra quadra = quadraRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Quadra não encontrada"));
+
+        if (!quadra.getEstabelecimento()
+                .getUsuario()
+                .getUsuarioId()
+                .equals(usuarioId)) {
+
+            throw new RuntimeException(
+                    "Você não é o proprietário desta quadra");
+        }
+
+        Categoria categoria = categoriaRepository.findById(
+                dados.getCategoriaId()
+        ).orElseThrow(() ->
+                new RuntimeException("Categoria não encontrada"));
+
+        quadra.setCategoria(categoria);
+        quadra.setNome(dados.getNome());
+        quadra.setDescricao(dados.getDescricao());
+        quadra.setCapacidade(dados.getCapacidade());
+
+        Quadra atualizada = quadraRepository.save(quadra);
+
+        return converterParaResponse(atualizada);
+    }
+
+    public QuadraResponseDTO alterarStatus(
+            Long id,
+            String status,
+            Long usuarioId) {
+
+        Quadra quadra = quadraRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Quadra não encontrada"));
+
+        if (!quadra.getEstabelecimento()
+                .getUsuario()
+                .getUsuarioId()
+                .equals(usuarioId)) {
+
+            throw new RuntimeException(
+                    "Você não é o proprietário desta quadra");
+        }
+
+        if (!status.equals("ATIVA") && !status.equals("INATIVA")) {
+            throw new RuntimeException(
+                    "Status inválido. Use ATIVA ou INATIVA");
+        }
+
+        quadra.setStatus(status);
+
+        Quadra atualizada = quadraRepository.save(quadra);
+
+        return converterParaResponse(atualizada);
     }
 }
