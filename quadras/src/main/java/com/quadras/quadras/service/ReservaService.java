@@ -64,8 +64,9 @@ public class ReservaService {
 
         List<Reserva> conflitos =
                 reservaRepository
-                        .findByQuadraIdAndDataInicioLessThanAndDataFimGreaterThan(
+                        .findByQuadraIdAndStatusInAndDataInicioLessThanAndDataFimGreaterThan(
                                 dados.getQuadraId(),
+                                List.of("PENDENTE", "PAGA"),
                                 dados.getDataFim(),
                                 dados.getDataInicio()
                         );
@@ -112,5 +113,77 @@ public class ReservaService {
                 reserva.getDataPagamento(),
                 reserva.getObservacao()
         );
+    }
+
+    public List<ReservaResponseDTO> listarPorUsuario(Long usuarioId) {
+
+        return reservaRepository
+                .findByUsuarioUsuarioId(usuarioId)
+                .stream()
+                .map(this::converterParaResponse)
+                .toList();
+    }
+
+    public List<ReservaResponseDTO> listarPorQuadra(
+            Long quadraId,
+            Long usuarioId) {
+
+        Quadra quadra = quadraRepository.findById(quadraId)
+                .orElseThrow(() ->
+                        new RuntimeException("Quadra não encontrada"));
+
+        Long proprietarioId = quadra
+                .getEstabelecimento()
+                .getUsuario()
+                .getUsuarioId();
+
+        if (!proprietarioId.equals(usuarioId)) {
+            throw new RuntimeException(
+                    "Você não é o proprietário desta quadra");
+        }
+
+        return reservaRepository
+                .findByQuadraId(quadraId)
+                .stream()
+                .map(this::converterParaResponse)
+                .toList();
+    }
+
+    public ReservaResponseDTO cancelar(
+            Long reservaId,
+            Long usuarioId) {
+
+        Reserva reserva = reservaRepository.findById(reservaId)
+                .orElseThrow(() ->
+                        new RuntimeException("Reserva não encontrada"));
+
+        if (!reserva.getUsuario()
+                .getUsuarioId()
+                .equals(usuarioId)) {
+
+            throw new RuntimeException(
+                    "Você não pode cancelar esta reserva");
+        }
+
+        if ("CANCELADA".equals(reserva.getStatus())) {
+            throw new RuntimeException(
+                    "Esta reserva já está cancelada");
+        }
+
+        LocalDateTime limiteCancelamento =
+                reserva.getDataInicio().minusHours(24);
+
+        if (LocalDateTime.now().isAfter(limiteCancelamento)) {
+            throw new RuntimeException(
+                    "Esta reserva não pode mais ser cancelada. " +
+                            "O prazo de 24 horas foi ultrapassado.");
+        }
+
+        reserva.setStatus("CANCELADA");
+
+        Reserva cancelada =
+                reservaRepository.save(reserva);
+
+        return converterParaResponse(cancelada);
     }
 }

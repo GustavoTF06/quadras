@@ -8,8 +8,9 @@ import java.util.List;
 
 public interface ReservaRepository extends JpaRepository<Reserva, Long>{
 
-    List<Reserva> findByQuadraIdAndDataInicioLessThanAndDataFimGreaterThan(
+    List<Reserva> findByQuadraIdAndStatusInAndDataInicioLessThanAndDataFimGreaterThan(
             Long quadraId,
+            List<String> status,
             LocalDateTime dataFim,
             LocalDateTime dataInicio
     );
