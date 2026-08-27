@@ -84,7 +84,23 @@ public class ReservaService {
         reserva.setDataFim(dados.getDataFim());
 
 
-        reserva.setValor(BigDecimal.ZERO);
+        long minutos = java.time.Duration.between(
+                dados.getDataInicio(),
+                dados.getDataFim()
+        ).toMinutes();
+
+        if (minutos % 60 != 0) {
+            throw new RuntimeException(
+                    "A reserva deve ter duração em horas completas");
+        }
+
+        long horas = minutos / 60;
+
+        BigDecimal valorTotal =
+                quadra.getValorHora()
+                        .multiply(BigDecimal.valueOf(horas));
+
+        reserva.setValor(valorTotal);
 
         reserva.setNumeroPessoas(dados.getNumeroPessoas());
         reserva.setObservacao(dados.getObservacao());

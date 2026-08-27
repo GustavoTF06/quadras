@@ -80,6 +80,7 @@ public class QuadraService {
         quadra.setNome(dados.getNome());
         quadra.setDescricao(dados.getDescricao());
         quadra.setCapacidade(dados.getCapacidade());
+        quadra.setValorHora(dados.getValorHora());
         quadra.setStatus("ATIVA");
 
         Quadra salva = quadraRepository.save(quadra);
@@ -146,6 +147,7 @@ public class QuadraService {
         quadra.setNome(dados.getNome());
         quadra.setDescricao(dados.getDescricao());
         quadra.setCapacidade(dados.getCapacidade());
+        quadra.setValorHora(dados.getValorHora());
 
         Quadra atualizada = quadraRepository.save(quadra);
 

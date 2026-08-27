@@ -3,6 +3,9 @@ package com.quadras.quadras.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.math.BigDecimal;
 
 public class QuadraCadastroDTO {
 
@@ -21,7 +24,19 @@ public class QuadraCadastroDTO {
     @Min(1)
     private Integer capacidade;
 
+    @NotNull
+    @Positive
+    private BigDecimal valorHora;
+
     public QuadraCadastroDTO() {
+    }
+
+    public BigDecimal getValorHora() {
+        return valorHora;
+    }
+
+    public void setValorHora(BigDecimal valorHora) {
+        this.valorHora = valorHora;
     }
 
     public Long getEstabelecimentoId() {

@@ -2,6 +2,8 @@ package com.quadras.quadras.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "quadra")
 public class Quadra {
@@ -30,6 +32,9 @@ public class Quadra {
 
     @Column(nullable = false, length = 20)
     private String status;
+
+    @Column(name = "valor_hora", nullable = false, precision = 10, scale = 2)
+    private BigDecimal valorHora;
 
     public Quadra() {
     }
@@ -88,5 +93,13 @@ public class Quadra {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public BigDecimal getValorHora() {
+        return valorHora;
+    }
+
+    public void setValorHora(BigDecimal valorHora) {
+        this.valorHora = valorHora;
     }
 }
